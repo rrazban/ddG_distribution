@@ -15,7 +15,7 @@ from Gaussian_mixture import FitGaussianMixture, get_protein_ddG
 def plotout_res(ddGs, k, pvalue, x, gaussian, bins):
 	plt.hist(ddGs, bins, density = True)	
 	plt.plot(x, gaussian, color='k', label = 'W = {0:.2f}\np-value = {1:.2E}'.format(k, pvalue))
-	plt.title('DHFR, 1M')
+	plt.title('first residue of dihydrofolate reductase')
 	plt.xlabel('$\Delta \Delta G$ (kcal/mol)')
 	plt.ylabel('probability')
 	plt.legend()

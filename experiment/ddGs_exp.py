@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'ddGs.py for experimental data (Figure 3 in paper)'
+help_msg = 'ddGs.py for experimental data (Figure S3 in paper)'
 
 import sys
 import numpy as np
@@ -25,7 +25,7 @@ def parse(ddGs):
  	return del_list
 
 def plotout(ddGs_exp, fit_gaussian_mixture):
-	plt.title('experimental results for G$\\beta$1')
+	plt.title('$\\beta$1 domain of protein G')
 	plt.hist(ddGs_exp[~np.isnan(ddGs_exp)], fit_gaussian_mixture.bins, density = True)	
 	plt.plot(fit_gaussian_mixture.x, yPred, color='k', label = 'N-Gaussian\nD = {0:.2f}\np-value = {1:.2E}'.format(k, KS_pvalue(k, len(fit_gaussian_mixture.x), len(fit_gaussian_mixture.x))))
 	plt.plot(fit_gaussian_mixture.x, gaussian, color='r', label = 'bi-Gaussian\nD = {0:.2f}\np-value = {1:.2E}'.format(ks2, KS_pvalue(ks2, len(fit_gaussian_mixture.x), len(fit_gaussian_mixture.x))))

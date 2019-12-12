@@ -36,7 +36,7 @@ def count_fails(pvalues, num_ddGs):
 def plotout(x, bar1, bar2):
 	plt.figure(figsize=(10, 4.5))
 	plt.bar(x-0.1, bar1, width=0.2, label='p-value < 0.05')
-	plt.bar(x+0.1, bar2, width=0.2, label='p-value < 0.001')
+	plt.bar(x+0.1, bar2, width=0.2, label='p-value < 0.001', hatch='//')
 	plt.xticks(x, pretty_proteins)# rotation = 20)
 	plt.ylabel('% of residues significantly different from Gaussian')
 	plt.legend()

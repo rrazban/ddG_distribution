@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'compare overall ddG distribution with N Gaussian model and bi-Gaussian fit (Figure 2 in paper)'
+help_msg = 'compare overall ddG distribution with N Gaussian model and bi-Gaussian fit (Figure S2 in paper)'
 
 import sys
 import pandas as pd
