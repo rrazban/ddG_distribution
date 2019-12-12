@@ -42,7 +42,7 @@ if __name__ == "__main__":
 			k, pvalue = stats.shapiro(ddGs_19)
 			ks.append(k)
 			pvalues.append(pvalue)
-			residues_ref.append(res)
+			residues_ref.append(res+1)	#account for res-1
 
 	residues_fail = np.where(np.array(pvalues)<0.05)[0] 
 
