@@ -22,7 +22,7 @@ d_pdb = {'PON': '1v04', 'lipase':'1ex9', '1BTL':'1btl', 'CAII':'1lug', 'DHFR':'1
 def get_contacts(pdb):
 	residue = residue_info.Residue('pdbs/{0}.pdb'.format(pdb))
 	residues, d_seq = residue.get_residues_sequence()
-	contact_matrix, surface_matrix, depth_matrix = residue.get_contact_surface_depth()
+	contact_matrix = residue.get_contact_matrix()
 
 	contacts = contact_matrix.sum(axis=1)
 	d_contacts = {}

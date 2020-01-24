@@ -1,17 +1,12 @@
-help_msg = 'inherit contact matrix, surface matrix and depth matrix of a PDB'
+help_msg = 'inherit contact matrix of a PDB'
 
 import os, sys
-from Bio.PDB import PDBParser, Polypeptide, NeighborSearch, ResidueDepth
+from Bio.PDB import PDBParser, NeighborSearch 
 from Bio import PDB
 import numpy as np
 
-import matplotlib.pyplot as plt
-
 import pdb_info
 
-sys.path.append('/Users/zero622/Desktop/paper/scripts/utlts/minpredictor')
-import runp
-		  
 
 class Residue(pdb_info.Protein):
 	def __init__(self, pdb_path):
@@ -47,17 +42,6 @@ class Residue(pdb_info.Protein):
 				M[res1][res2] = 1
 		self.contact_matrix = M + M.T	#cant set equal to self or else messes up
 	
-	def surface(self):
-		self.d_int2surface = {0:'core', 1:'surface'}
-		self.surface_matrix, self.asas = runp.scoreOne(self.pdb_path)
-
-	def depth(self):
-		residue_depth = ResidueDepth(self.structure[0])
-		for res_depth in residue_depth:
-			res = res_depth[0].id[1]
-			depth = res_depth[1][0]
-			self.depth_matrix[res] = depth
-
-	def get_contact_surface_depth(self):
-		self.contact(), self.surface()#, self.depth()	#function doesn't work with some versions of biopython
-		return self.contact_matrix, self.surface_matrix, self.depth_matrix
+	def get_contact_matrix(self):
+		self.contact()
+		return self.contact_matrix
