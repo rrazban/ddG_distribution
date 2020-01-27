@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'contact_dist.py for experimental data'
+"""contact_dist.py for experimental data"""
 
 import os, sys
 import numpy as np

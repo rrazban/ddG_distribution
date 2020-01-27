@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'analyze amino acids of ddGs_res.py residues that reject the null, compare to overall proteins amino acid usage (Figure S2 in paper)'
+"""analyze amino acids of ddGs_res.py residues that reject the null, compare to overall proteins amino acid usage (Figure S2 in paper)"""
 
 import os, sys
 import numpy as np
@@ -8,13 +8,17 @@ import matplotlib.pyplot as plt
 import collections
 from scipy import stats
 import pandas as pd
+from Bio.SeqUtils import seq3
 
-sys.path.append('../')
-from Gaussian_mixture import get_protein_ddG
 from ddGs_res import goodness_of_fit, proteins, pretty_proteins
+
+sys.path.append('../utlts')
+from Gaussian_mixture import get_protein_ddG
 
 
 def get_aaseq_fail(residues_fail, protein):
+	"""collect the amino acid identities of those residues that reject the null"""
+
 	residues_ref = list(protein['No'])
 
 	aaseq_fail = []
@@ -25,12 +29,11 @@ def get_aaseq_fail(residues_fail, protein):
 	return aaseq_fail
 
 def prepare_output(AAs, count_enriched_AAs):
-	d_translate = {u'GLY': 'G', u'LYS': 'K', u'CYS': 'C', u'ASP': 'D', u'GLN': 'Q', u'SER': 'S', u'PRO': 'P', u'ALA': 'A', u'HIS': 'H', u'ARG': 'R', u'TYR': 'Y', u'VAL': 'V', u'MET': 'M', u'ILE': 'I', u'PHE': 'F', u'TRP': 'W', u'THR': 'T', u'ASN': 'N', u'LEU': 'L', u'GLU': 'E'}
-	inverted_dict = dict([[v,k] for k,v in d_translate.items()])
+	"""organize output such that amino acids are grouped by category"""
 
 	output = []
 	for AA in AAs:
-		AA_3 = inverted_dict[AA]
+		AA_3 = (seq3(AA)).upper()
 		if AA_3 in count_enriched_AAs:
 			output.append(count_enriched_AAs[AA_3])
 		else:

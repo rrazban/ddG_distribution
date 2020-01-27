@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'determine whether ddGs per residue can be fit to a Gaussian (Figure 1 in paper)'
+"""determine whether ddGs per residue can be fit to a Gaussian (Figure 1 in paper)"""
 
 import sys
 import pandas as pd
@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-sys.path.append('../')
+sys.path.append('../utlts')
 from Gaussian_mixture import FitGaussianMixture, get_protein_ddG
 
 
@@ -17,6 +17,20 @@ pretty_proteins = ['PON', 'Lip', 'TEM1', 'CAII', 'DHFR', 'RNaH', 'Myo', 'SNase',
 
 
 def goodness_of_fit(ddGs):
+	""" 
+	Performs Shapiro-Wilk test on array of ddGs 
+  
+	Parameters: 
+	ddGs (array-like): Tabulation of all 19 ddGs 
+						for all residues of a given
+						protein
+  
+	Returns: 
+	ks (list of float): Test statistic of SW test for all residues
+	pvalues (list of float): Pvalue of SW test for all residues
+
+	"""
+
 	fit_gaussian_mixture = FitGaussianMixture(ddGs)
 	ks = []
 	pvalues = []
@@ -29,6 +43,7 @@ def goodness_of_fit(ddGs):
 	return ks, pvalues
 	
 def count_fails(pvalues, num_ddGs):
+	"""determine the fraction of residues that reject the null"""
 	low = len(np.where(pvalues<0.05)[0])/float(len(pvalues))*100
 	high = len(np.where(pvalues<0.001)[0])/float(len(pvalues))*100
 	return low, high

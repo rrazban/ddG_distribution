@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
-help_msg = 'analyze contact distriubtion of ddGs_res.py residues that reject the null, compare to overall protein contact distribution (Figure 2 in paper)'
+"""analyze contact distriubtion of ddGs_res.py residues that reject the null, 
+compare to overall protein contact distribution (Figure 2 in paper)"""
 
 import os, sys
 import numpy as np
@@ -9,17 +10,18 @@ from scipy import stats
 import pandas as pd
 import seaborn as sns
 
-sys.path.append('../')
-from Gaussian_mixture import FitGaussianMixture, get_protein_ddG
 from ddGs_res import goodness_of_fit, proteins, pretty_proteins
 
 sys.path.append('../utlts')
 import residue_info
+from Gaussian_mixture import FitGaussianMixture, get_protein_ddG
+
 
 d_pdb = {'PON': '1v04', 'lipase':'1ex9', '1BTL':'1btl', 'CAII':'1lug', 'DHFR':'1rx2', 'Rnase H':'2rn2', 'Myoglobin':'1a6k', 'Snase':'1stn', 'human Lysozyme':'1rex', 'lysozyme':'1dpx', 'Rnase':'1fs3', 'Barnase':'1a2p', 'AcP':'2acy', 'Ubiqitin':'1ubq', 'Protein G':'2igd', 'Cro_repressor':'1orc'}
 
-
 def get_contacts(pdb):
+	"""get number of contacts per residue"""
+
 	residue = residue_info.Residue('pdbs/{0}.pdb'.format(pdb))
 	residues, d_seq = residue.get_residues_sequence()
 	contact_matrix = residue.get_contact_matrix()
@@ -31,6 +33,8 @@ def get_contacts(pdb):
 	return d_contacts
 
 def make_dataframe(output, rejected_contacts, all_contacts):
+	"""organize output into dataframe to utilize seaborn boxplot"""
+
 	for contact in rejected_contacts:
 		output.append([contact, 'reject the null', pretty_proteins[p]])
 	for contact in all_contacts:
@@ -69,4 +73,3 @@ if __name__ == "__main__":
 		output = make_dataframe(output, rejected_contacts, all_contacts)
 #		k, pvalue = stats.ks_2samp(all_contacts, rejected_contacts)	#only CAII significant
 	plotout(pd.DataFrame(output, columns = ['contacts', 'residues', 'protein']))
-	

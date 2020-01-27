@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'ddGs_res.py for one protein (Figure S1 in paper)'
+"""ddGs_res.py for one protein (Figure S1 in paper)"""
 
 import sys
 import pandas as pd
@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
-sys.path.append('../')
+sys.path.append('../utlts')
 from Gaussian_mixture import FitGaussianMixture, get_protein_ddG
 
 

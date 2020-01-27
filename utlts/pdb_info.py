@@ -1,14 +1,21 @@
-help_msg = 'inherit residue, sequence, chain info about PDB'	
-
 import os
 from Bio.PDB import PDBParser, Residue, Polypeptide
 from Bio import PDB
 
 
 class Protein(object):
+	""" 
+	This is a class that obtains protein sequence 
+	and structure information 
+      
+	Attributes: 
+		d_seq (dict of {int: str): connects PDB 
+			residue number with its aminoacid type
+	"""
+
 	def __init__(self, pdb_path):
 		self.structure = PDBParser().get_structure("", pdb_path)
-		self.residues = []		#only includes those residues captured by Xray crystallography
+		self.residues = []
 		self.d_sequence = {}
 
 		self.parse_structure()

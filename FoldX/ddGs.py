@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'compare overall ddG distribution with N Gaussian model and bi-Gaussian fit (Figure S2 in paper)'
+"""compare overall ddG distribution with N Gaussian model and bi-Gaussian fit (Figure S3 in paper)"""
 
 import sys
 import pandas as pd
@@ -10,11 +10,13 @@ from scipy import stats
 
 from ddGs_res import proteins, pretty_proteins
 
-sys.path.append('../')
+sys.path.append('../utlts')
 from Gaussian_mixture import FitGaussianMixture, get_protein_ddG
 
 
 def generate_dist(ddGs, fit_gaussian_mixture):
+	"""generate protein's overall ddG Gaussian from fitting each residue to a Gaussian"""
+	
 	yPred = 0
 	for res, ddGs_res in enumerate(ddGs):	#not efficient but want to make sure preprocess done correctly
 		ddG_19 = fit_gaussian_mixture.preprocess(ddGs_res)
@@ -25,14 +27,17 @@ def generate_dist(ddGs, fit_gaussian_mixture):
 	return yPred
 
 def KS_pvalue_bound(pvalue, num1, num2):	#not consistent with how python calculates pvalue, seems to be distr. specific
+	"""Return theoretical Kolmogorov-Smirnov test statistic"""
 	c = np.sqrt(-0.5*np.log(pvalue))
 	k = c*np.sqrt((num1+num2)/float(num1*num2))
 	return k
 
 def KS_pvalue(k, num1, num2):
+	"""Return theoretical Kolmogorov-Smirnov pvalue"""
 	return np.exp(-2*k**2 * num1*num2/(num1 + num2))
 
 def run_gaussian_mixture(fit_gaussian_mixture):
+	"""Fit bi-Gaussian model to a protein's overall ddG distribution"""
 	nGaussian = 2
 	negLL, MLE_coeffs = fit_gaussian_mixture.run(nGaussian)
 	weights, means, stds = fit_gaussian_mixture.parse_params(MLE_coeffs)
@@ -79,6 +84,3 @@ if __name__ == '__main__':
 		ks2.append(run_gaussian_mixture(fit_gaussian_mixture)[0])
 
 	plotout(np.arange(len(proteins)), ks, ks2)
-
-
-

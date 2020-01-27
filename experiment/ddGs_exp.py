@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-help_msg = 'ddGs.py for experimental data (Figure S3 in paper)'
+"""ddGs.py for experimental data (Figure S4 in paper)"""
 
 import sys
 import numpy as np
@@ -9,14 +9,17 @@ from scipy import stats
 
 from ddGs_res_exp import read_in_experiment
 
-sys.path.append('../')
+sys.path.append('../utlts')
 from Gaussian_mixture import FitGaussianMixture
+
 sys.path.append('../FoldX')
 from ddGs_res import proteins, pretty_proteins
 from ddGs import run_gaussian_mixture, generate_dist, KS_pvalue
 
 
 def parse(ddGs):
+	"""identify those residues with less than the maximum number (17) of mutant ddGs measured"""
+
 	del_list = []
 	for res, ddG_res in enumerate(ddGs):
 		ddGs_17 = fit_gaussian_mixture.preprocess(ddG_res)

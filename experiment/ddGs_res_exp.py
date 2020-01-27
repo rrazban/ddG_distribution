@@ -1,50 +1,65 @@
 #!/usr/bin/python
 
-help_msg = 'ddGs_res.py for experimental data (Figure 3)'
+"""ddGs_res.py for experimental data (Figure 3)"""
 
 import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
+from Bio.SeqUtils import seq1
 
-sys.path.append('../')
-from Gaussian_mixture import FitGaussianMixture
+sys.path.append('../utlts')
+from Gaussian_mixture import FitGaussianMixture, aminoacids
 
 sys.path.append('../FoldX')
 from ddGs_res_DHFR import plotout_res
 
 
 def parse(res):
+	"""return residue number and amino acid identity"""	
+
 	if len(res)==3:
 		return int(res[1]), res[2]
 	elif len(res)==4:
 		return int(res[1:3]), res[3]
 
 def read_in_experiment():
-	aminoacids = ['G', 'A', 'L', 'V', 'I', 'P', 'R', 'T', 'S', 'C', 'M', 'K', 'E', 'Q', 'D', 'N', 'W', 'Y', 'F', 'H']	
+	""" 
+	Read in raw data from Nisthal_2019.xlsx, making sure
+	it matches FoldX read in
+  
+    Returns: 
+	array-like   
+		organized ddG data by residue and amino acid type
+
+    """
+
+	AAs = [seq1(aa_3) for aa_3 in aminoacids]
 
 	data_file = 'Nisthal_2019.xlsx'	
 	df2 = pd.read_excel(data_file)
 	ddGs = np.zeros((56, 20))
-	ddGs.fill(np.nan)	#match Tokuriki dataset readin
+	ddGs.fill(np.nan)	#match Tokuriki dataset read in
 	for res, ddG in zip(df2['MUT_LBL'], df2['ddG(mAvg)_mean']):
 		res_num, AA = parse(res)
 		try:
 			ddG = float(ddG)
-			if ddG!=-4:	#they include the black squares in fig 2 as -4 kcal/mol...
-				ddGs[res_num-1][aminoacids.index(AA)] = -float(ddG)
+			if ddG!=-4:	#Nisthal includes the black squares in fig 2 as -4 kcal/mol
+				ddGs[res_num-1][AAs.index(AA)] = -float(ddG)
 		except:
 			pass
 	return ddGs
 
 def get_bars(all_pvalues, some_pvalues):
+	"""obtain number of residues that reject the null"""
+
 	bars = []
 	for threshold in [0.05, 0.001]:
 		bar1 = []
 		for pvalues in [all_pvalues, some_pvalues]:
 			bar1.append(len(np.where(pvalues < threshold)[0]))
-			print list(np.where(pvalues < threshold)[0])
+#			print list(np.where(pvalues < threshold)[0])
 		bars.append(bar1)
 	return bars
 

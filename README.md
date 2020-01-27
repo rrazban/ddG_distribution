@@ -1,4 +1,8 @@
 # ΔΔG distribution
-Scripts to analyze single mutant protein stability effects (ΔΔGs) from `FoldX/` (computation) and `experiment/` data.
+Data analysis scripts used in the following paper:
+Razban, R.M. and Shakhnovich, E.I., 2019. Effects of single mutations on protein stability are Gaussian distributed. bioRxiv.
 
-Test the influence of the number of per residue contacts on whether per residue ddGs are Gaussian. 
+Scripts directly correspond to Figures and analyses presented in the text.
+For example, to reproduce Figure 1 in the text. Got to `FoldX/` and run `./ddGs_res.py`.
+
+The module's docstring informs which Figure or analysis in the text it reproduces. 
