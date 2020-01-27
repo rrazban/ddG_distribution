@@ -1,7 +1,3 @@
-#!/usr/bin/python
-
-help_msg = 'fit GaussianMixture of any number of Gaussians using same binning as Tokuriki et al. (2007)'
-
 import pandas as pd
 import numpy as np
 from scipy.optimize import curve_fit, minimize
@@ -11,10 +7,16 @@ from scipy import stats
 aminoacids = ['GLY', 'ALA', 'LEU', 'VAL', 'ILE', 'PRO', 'ARG', 'THR', 'SER', 'CYS', 'MET', 'LYS', 'GLU', 'GLN', 'ASP', 'ASN', 'TRP', 'TYR', 'PHE', 'HIS']
 
 class FitGaussianMixture():
-	#same conditions as Tokuriki 2007
-	binwidth = 1 #kcal/mol
-	min_ddG = -10
-	max_ddG = 15 
+	""" 
+	This is a class that fits Gaussian mixture models.
+      
+	Attributes: 
+		ddGs (array-like): single ddG mutants organized by residue and aminoacid
+	"""
+
+	binwidth = 1	#kcal/mol
+	min_ddG = -10	#kcal/mol
+	max_ddG = 15	#kcal/mol
 
 	def __init__(self, ddGs):
 		self.hist, self.bins = np.histogram(self.preprocess(ddGs), bins = np.arange(self.min_ddG, self.max_ddG + self.binwidth, self.binwidth), density=True)
@@ -22,6 +24,8 @@ class FitGaussianMixture():
 		self.x = self.bins[:-1]+dist		 
 
 	def preprocess(self, ddGs):
+		"""remove empty elements of array and adjust outliers just as in Tokuriki 2007"""
+
 		ddGs = ddGs[~np.isnan(ddGs)]
 		ddGs[ddGs < self.min_ddG] = self.min_ddG
 		ddGs[ddGs > self.max_ddG] = self.max_ddG
@@ -34,6 +38,8 @@ class FitGaussianMixture():
 		return weights, means, stds
 
 	def MLE_func(self, params):	#can't pass x for minimize function
+		"""maximum likelihood estimate of fitting n-Gaussian mixture model"""
+
 		weights, means, stds = self.parse_params(params)
 		LLstd = params[-1]
 	
@@ -50,23 +56,9 @@ class FitGaussianMixture():
 		results = minimize(self.MLE_func, p0, method='Nelder-Mead', options={'maxfev': 100000, 'disp':True})	#Nelder-Mead can't do bounds
 		return results.fun, results.x
 
-	def func2(self, coeffs):
-		nGaussian = (len(coeffs)+1)/3
-		weights = coeffs[:nGaussian-1]	#make sure last weight is normalized!
-		means = coeffs[nGaussian - 1:nGaussian*2 - 1]
-		stds = coeffs[nGaussian*2 - 1:nGaussian*3 - 1]
-		LLstd = coeffs[-1]
-
-		yPred = 0
-		for weight, mean, std in zip(weights, means, stds):
-			yPred += weight*stats.norm.pdf(self.x, loc=mean, scale=std)
-		yPred += (1-np.sum(weights))*stats.norm.pdf(self.x, loc=means[-1], scale=stds[-1])
-
-		negLL = -np.sum( stats.norm.logpdf(self.hist, loc=yPred, scale=LLstd ) )	#this sd is diff!
-
-		return negLL 
-
 	def prep_run(self):
+		"""prepare inputs for curve_fit syntax"""
+	
 		self.p0 = np.zeros(self.nGaussians*3 - 1)
 		self.p0.fill(1)
 		self.p0[:self.nGaussians-1] = 1/float(self.nGaussians)
@@ -82,6 +74,8 @@ class FitGaussianMixture():
 		self.bounds = zip(*bounds)
 
 	def run(self, nGaussians):
+		"""standard run where all coefficients are allowed to vary"""
+
 		self.nGaussians = nGaussians
 		self.prep_run()
 
@@ -91,26 +85,25 @@ class FitGaussianMixture():
 #		print MLE_coeffs
 		return negLL, MLE_coeffs
 
-	def special_run(self, coeffs):
-		results2 = minimize(self.func2, coeffs, method='Nelder-Mead', options={'maxfev': 100000, 'disp':True})
-#		print results.x
+def func(x, *params):
+	"""function optimized by curve_fit()"""
 
-def func(x, *params):	#need this cuz curve_fit has specific syntax
 	nGaussian = (len(params)+1)/3
-	weights = params[:nGaussian-1]	#make sure last weight is normalized!
+	weights = params[:nGaussian-1]	
 	means = params[nGaussian - 1:nGaussian*2 - 1]
 	stds = params[nGaussian*2 - 1:]
 
 	dist = 0
 	for weight, mean, std in zip(weights, means, stds):
 		dist += weight*stats.norm.pdf(x, loc=mean, scale=std)
-	dist += (1-np.sum(weights))*stats.norm.pdf(x, loc=means[-1], scale=stds[-1])
+	dist += (1-np.sum(weights))*stats.norm.pdf(x, loc=means[-1], scale=stds[-1])	#make sure last weight is normalized!
 
 	return dist 
 
 def get_protein_ddG(df_protein):
+	"""transforms dataframe obtained from Tokuriki_2007.xlsx into ddG array"""
+
 	df_protein = df_protein[aminoacids]
 	ddGs = df_protein.values
 	ddGs = ddGs.astype(float)
 	return ddGs
-
