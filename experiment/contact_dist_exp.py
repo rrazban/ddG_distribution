@@ -6,11 +6,10 @@ import os, sys
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-import pandas as pd
 
 from ddGs_res_exp import read_in_experiment
 
-sys.path.append('../')
+sys.path.append('../utlts')
 from Gaussian_mixture import FitGaussianMixture
 
 sys.path.append('../FoldX')
@@ -21,7 +20,8 @@ from ddGs_res import goodness_of_fit
 def plotout(protein_name, rejected_contacts, all_contacts):
 	plt.title(protein_name)
 	plt.boxplot([rejected_contacts, all_contacts], showmeans=True)#, label = 'all')
-	plt.xlabel('number of contacts')
+	plt.xlabel('residues')
+	plt.xticks([1, 2], ['reject the null', 'all'])
 	plt.ylabel('frequency of residues')
 	k, pvalue = stats.ks_2samp(all_contacts, rejected_contacts)	#only CAII significant
 	plt.legend(title = 'KS = {0:.2f} ({1:.2E})'.format(k, pvalue))
