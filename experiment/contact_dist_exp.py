@@ -14,7 +14,6 @@ from Gaussian_mixture import FitGaussianMixture
 
 sys.path.append('../FoldX')
 from contact_dist import get_contacts
-from ddGs_res import goodness_of_fit
 
 
 def plotout(protein_name, rejected_contacts, all_contacts):
@@ -31,7 +30,6 @@ def plotout(protein_name, rejected_contacts, all_contacts):
 if __name__ == "__main__": 
 	ddGs_exp = read_in_experiment()	#ordered by res-1
 	fit_gaussian_mixture = FitGaussianMixture(ddGs_exp)
-	ddGs_all = fit_gaussian_mixture.preprocess(ddGs_exp)
 
 	ks = []
 	pvalues = []

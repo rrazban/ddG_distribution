@@ -4,7 +4,6 @@
 
 import sys
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
 
@@ -20,7 +19,6 @@ def plotout_res(ddGs, k, pvalue, x, gaussian, bins):
 	plt.ylabel('probability')
 	plt.legend()
 	plt.show()
-#	sys.exit()
 
 def plotout(ks):
 	plt.hist(ks)
