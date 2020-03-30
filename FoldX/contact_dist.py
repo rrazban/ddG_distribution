@@ -44,9 +44,13 @@ def make_dataframe(output, rejected_contacts, all_contacts):
 def plotout(df_output):
 	plt.figure(figsize=(10, 4.5))
 	box = sns.boxplot(x="protein", y="contacts", hue="residues", data=df_output)#, palette="PRGn")#, showmeans=True)
+
 	for i,thisbar in enumerate(box.artists):
 		if i%2 == 1:
 			thisbar.set_hatch('//')
+	box.patches[1].set_hatch('//')
+	plt.legend(title='residues')
+
 	plt.xlabel('')
 	plt.show()
 
