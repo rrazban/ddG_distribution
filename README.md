@@ -1,7 +1,7 @@
 # ΔΔG distribution
 Data analysis scripts used in the following paper:
 
-[Razban, R.M. and Shakhnovich, E.I., 2020. Effects of single mutations on protein stability are Gaussian distributed. Biophysical Journal.] (https://doi.org/10.1016/j.bpj.2020.04.027)
+Razban, R.M. and Shakhnovich, E.I., 2020. [Effects of single mutations on protein stability are Gaussian distributed](https://doi.org/10.1016/j.bpj.2020.04.027). Biophysical Journal.
 
 The module's docstring informs which Figure or analysis in the text it reproduces. 
 
